@@ -1,6 +1,6 @@
 {
   "name": "kermite_firmware_library",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A set of modules to be used for making a Kermite compatible firmware.",
   "keywords": "keyboard, RP2040, Kermite",
   "repository": {
