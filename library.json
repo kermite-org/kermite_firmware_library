@@ -1,6 +1,6 @@
 {
   "name": "kermite_firmware_library",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A set of modules to be used for making a Kermite compatible firmware.",
   "keywords": "keyboard, RP2040, Kermite",
   "repository": {
@@ -14,7 +14,8 @@
   "platforms": "raspberrypi",
   "dependencies": {
     "adafruit/Adafruit NeoPixel": "^1.10.7",
-    "adafruit/Adafruit SSD1306": "^2.5.9"
+    "adafruit/Adafruit SSD1306": "^2.5.9",
+    "kermite/KermiteCore_Arduino": "^0.2.1"
   },
   "export": {
     "exclude": [".gitignore", ".vscode", ".clang-format", "cspell.json"]
