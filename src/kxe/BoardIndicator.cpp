@@ -49,13 +49,6 @@ static void boardIndicator_write(int inputIndex, bool value) {
   boardLED->write(index, states[index] || states[index + 3]);
 }
 
-static void handleKeySlotStateChange(uint8_t slotIndex, bool isDown) {
-  pressedKeyCount += isDown ? 1 : -1;
-  if (optionAffectKeyHoldStateToLed) {
-    boardIndicator_write(5, pressedKeyCount > 0);
-  }
-}
-
 static void handleParameterValueChange(uint8_t eventType, uint8_t slotIndex,
                                        uint8_t value) {
   if (eventType == ParameterChangeEventType_ChangedAll) {
@@ -76,21 +69,31 @@ static void boardIndicator_initialize() {
   configManager_setParameterExposeFlag(SystemParameter_HeartbeatLed);
   configManager_setParameterExposeFlag(SystemParameter_KeyHoldIndicatorLed);
   configManager_addParameterChangeListener(handleParameterValueChange);
-  keyboardMain_setKeySlotStateChangedCallback(handleKeySlotStateChange);
   boardLED->initialize();
+}
+
+static void boardIndicator_emitKeyStates() {
+  auto *exposedState = &keyboardMain_exposedState;
+  bool hold = exposedState->pressedKeyIndex != KEYINDEX_NONE;
+  boardIndicator_write(5, hold);
+}
+
+static void boardIndicator_emitHeartbeat() {
+  if (optionUseHeartbeatLed) {
+    boardIndicator_write(4, true);
+    delay(2);
+    boardIndicator_write(4, false);
+  }
 }
 
 static void boardIndicator_update() {
   static uint32_t taskLedNextTimeMs = 0;
   uint32_t timeMs = millis();
   if (timeMs > taskLedNextTimeMs) {
-    if (optionUseHeartbeatLed) {
-      boardIndicator_write(4, true);
-      delay(2);
-      boardIndicator_write(4, false);
-    }
+    boardIndicator_emitHeartbeat();
     taskLedNextTimeMs = timeMs + 3000;
   }
+  boardIndicator_emitKeyStates();
 }
 
 BoardIndicator::BoardIndicator(int boardLedType) {
